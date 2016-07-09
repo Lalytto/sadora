@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_bank"
+            android:icon="@drawable/ic_account_balance"
+            android:title="@string/menu_banks" />
+        <item
+            android:id="@+id/nav_food"
+            android:icon="@drawable/ic_local_dining"
+            android:title="@string/menu_food" />
+        <item
+            android:id="@+id/nav_shopping"
+            android:icon="@drawable/ic_local_mall"
+            android:title="@string/menu_shopping" />
+        <item
+            android:id="@+id/nav_culture"
+            android:icon="@drawable/ic_school"
+            android:title="@string/menu_culture" />
+        <item
+            android:id="@+id/nav_hotel"
+            android:icon="@drawable/ic_hotel"
+            android:title="@string/menu_hotel" />
+        <item
+            android:id="@+id/nav_nature"
+            android:icon="@drawable/ic_filter_hdr"
+            android:title="@string/menu_nature" />
+        <item
+            android:id="@+id/nav_health"
+            android:icon="@drawable/ic_favorite"
+            android:title="@string/menu_health" />
+        <item
+            android:id="@+id/nav_services"
+            android:icon="@drawable/ic_extension"
+            android:title="@string/menu_services" />
+        <item
+            android:id="@+id/nav_tour"
+            android:icon="@drawable/ic_directions_boat"
+            android:title="@string/menu_tour" />
+        <item
+            android:id="@+id/nav_trip"
+            android:icon="@drawable/ic_traffic"
+            android:title="@string/menu_trip" />
+    </group>
+
+    <item android:title="Acerca">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_verified_user"
+                android:title="Acerca" />
+        </menu>
+    </item>
+
+</menu>
