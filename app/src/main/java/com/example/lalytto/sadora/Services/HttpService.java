@@ -14,7 +14,9 @@ import java.net.URL;
  */
 public class HttpService extends AsyncTask<Void, Integer, Void> {
 
-    String uriHttp = "http://192.168.54.3/";
+    public static String uriHttp = "http://192.168.54.7/";
+    public static String uriLogin = uriHttp+"?sys=sadora&db=";
+    public static String uriGET = uriHttp+"?sys=sadora&db=get_data&tb=";
 
     @Override
     protected Void doInBackground(Void... voids) {

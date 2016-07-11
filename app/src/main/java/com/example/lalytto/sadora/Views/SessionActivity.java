@@ -2,9 +2,6 @@ package com.example.lalytto.sadora.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -29,15 +26,6 @@ public class SessionActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -46,7 +34,7 @@ public class SessionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        // Intancia de controller
         this.ctrl = new AppCtrl(this);
     }
 
@@ -90,26 +78,33 @@ public class SessionActivity extends AppCompatActivity
 
         if (id == R.id.nav_about) {
             this.ctrl.activitiesCtrl.changeActivity(SessionActivity.this, AboutActivity.class);
-        } else if (id == R.id.nav_bank) {
-
-        } else if (id == R.id.nav_culture) {
-
-        } else if (id == R.id.nav_food) {
-
-        } else if (id == R.id.nav_health) {
-
-        } else if (id == R.id.nav_hotel) {
-
-        } else if (id == R.id.nav_nature) {
-
-        } else if (id == R.id.nav_trip) {
-
-        } else if (id == R.id.nav_tour) {
-
-        } else if (id == R.id.nav_services) {
-
-        } else if (id == R.id.nav_shopping) {
-
+        } else {
+            Intent intent;
+            intent = this.ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
+            String category = null;
+            if (id == R.id.nav_bank) {
+                category = "banks";
+            } else if (id == R.id.nav_culture) {
+                category = "culture";
+            } else if (id == R.id.nav_food) {
+                category = "food";
+            } else if (id == R.id.nav_health) {
+                category = "health";
+            } else if (id == R.id.nav_hotel) {
+                category = "hotels";
+            } else if (id == R.id.nav_nature) {
+                category = "nature";
+            } else if (id == R.id.nav_trip) {
+                category = "trips";
+            } else if (id == R.id.nav_tour) {
+                category = "tours";
+            } else if (id == R.id.nav_services) {
+                category = "services";
+            } else if (id == R.id.nav_shopping) {
+                category = "shopping";
+            }
+            intent.putExtra("category", category);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

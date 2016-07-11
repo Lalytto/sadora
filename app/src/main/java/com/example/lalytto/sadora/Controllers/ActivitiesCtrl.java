@@ -16,4 +16,8 @@ public class ActivitiesCtrl {
         out.startActivity(new Intent(out, in));
     }
 
+    public Intent changeActivityParams(Context out, Class in){
+        return (new Intent(out, in));
+    }
+
 }
