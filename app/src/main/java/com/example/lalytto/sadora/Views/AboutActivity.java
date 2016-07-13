@@ -7,19 +7,20 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lalytto.sadora.Models.Article;
+import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
 import com.example.lalytto.sadora.Services.HttpService;
 import com.example.lalytto.sadora.Services.OnHttpRequestComplete;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class AboutActivity extends AppCompatActivity {
 
-    ArrayList<Article> articleList;
+    ArrayList<Sitios> articleList;
     NestedScrollView stackContent;
     TextView descApp;
 
@@ -39,16 +40,18 @@ public class AboutActivity extends AppCompatActivity {
                 if(status.isSuccess()){
                     try {
                         JSONObject json = new JSONObject(status.getResult());
-                        descApp.setText(json.getString("data"));
+                        JSONObject data = json.getJSONObject("data");
+                        //JSONArray data = json.getJSONObject("data");
+                        descApp.setText(data.getString("setting_descripcion"));
                     }catch (Exception e){
                         System.out.println("Fallo!");
                         e.printStackTrace();
                     }
-                    Toast.makeText(AboutActivity.this, status.getResult(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(AboutActivity.this, status.getResult(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        client.excecute(HttpService.uriHttp+"about");
+        client.excecute(HttpService.uriGET+"settings");
     }
 
 }

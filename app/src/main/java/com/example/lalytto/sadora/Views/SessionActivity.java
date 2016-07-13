@@ -7,17 +7,37 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.lalytto.sadora.Adapters.RVAdapterCategory;
+import com.example.lalytto.sadora.Adapters.RVAdapterSession;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
+import com.example.lalytto.sadora.Models.Categorias;
+import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
+import com.example.lalytto.sadora.Services.HttpClient;
+import com.example.lalytto.sadora.Services.HttpService;
+import com.example.lalytto.sadora.Services.OnHttpRequestComplete;
+import com.example.lalytto.sadora.Services.Response;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class SessionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppCtrl ctrl;
+    RecyclerView recyclerView;
+    RVAdapterSession adapter;
+    String uriService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +54,41 @@ public class SessionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         // Intancia de controller
         this.ctrl = new AppCtrl(this);
+        uriService = HttpService.uriGET+"categorias";
+        recyclerView = (RecyclerView) findViewById(R.id.rcv_categories);
+
+
+        HttpClient client = new HttpClient(new OnHttpRequestComplete() {
+            @Override
+            public void onComplete(Response status) {
+                if(status.isSuccess()){
+                    Gson gson = new GsonBuilder().create();
+                    try {
+                        JSONObject json = new JSONObject(status.getResult());
+                        JSONArray jsonarray = json.getJSONArray("data");
+                        ArrayList<Categorias> categorias = new ArrayList<Categorias>();
+                        for(int i = 0; i < jsonarray.length(); i++) {
+                            String categoria = jsonarray.getString(i);
+                            Categorias a = gson.fromJson(categoria,Categorias.class);
+                            categorias.add(a);
+                        }
+                        adapter = new RVAdapterSession(categorias);
+                        LinearLayoutManager llm = new LinearLayoutManager(SessionActivity.this);
+                        recyclerView.setLayoutManager(llm);
+                        recyclerView.setAdapter(adapter);
+                    }catch (Exception e){
+                        System.out.println("Fallo!");
+                        e.printStackTrace();
+                    }
+                } else {
+                    ctrl.elementsService.displayToast("Ha fallado la conexión con lalytto.com - "+uriService);
+                }
+            }
+        }); client.excecute(uriService);
+
     }
 
     @Override
@@ -83,25 +136,25 @@ public class SessionActivity extends AppCompatActivity
             intent = this.ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
             String category = null;
             if (id == R.id.nav_bank) {
-                category = "banks";
+                category = "1";
             } else if (id == R.id.nav_culture) {
-                category = "culture";
+                category = "4";
             } else if (id == R.id.nav_food) {
-                category = "food";
+                category = "2";
             } else if (id == R.id.nav_health) {
-                category = "health";
+                category = "7";
             } else if (id == R.id.nav_hotel) {
-                category = "hotels";
+                category = "5";
             } else if (id == R.id.nav_nature) {
-                category = "nature";
+                category = "6";
             } else if (id == R.id.nav_trip) {
-                category = "trips";
+                category = "10";
             } else if (id == R.id.nav_tour) {
-                category = "tours";
+                category = "9";
             } else if (id == R.id.nav_services) {
-                category = "services";
+                category = "8";
             } else if (id == R.id.nav_shopping) {
-                category = "shopping";
+                category = "3";
             }
             intent.putExtra("category", category);
             startActivity(intent);

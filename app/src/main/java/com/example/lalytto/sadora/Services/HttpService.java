@@ -14,8 +14,8 @@ import java.net.URL;
  */
 public class HttpService extends AsyncTask<Void, Integer, Void> {
 
-    public static String uriHttp = "http://192.168.54.7/";
-    public static String uriLogin = uriHttp+"?sys=sadora&db=";
+    public static String uriHttp = "http://sadora.lalytto.com/app/";
+    public static String uriLogin = uriHttp+"?sys=sadora&db=post_login";
     public static String uriGET = uriHttp+"?sys=sadora&db=get_data&tb=";
 
     @Override

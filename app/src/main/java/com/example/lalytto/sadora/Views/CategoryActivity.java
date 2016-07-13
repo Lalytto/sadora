@@ -1,6 +1,5 @@
 package com.example.lalytto.sadora.Views;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,12 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
-import com.example.lalytto.sadora.Adapters.RVAdapter;
+import com.example.lalytto.sadora.Adapters.RVAdapterCategory;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
-import com.example.lalytto.sadora.Models.Article;
+import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
 import com.example.lalytto.sadora.Services.HttpService;
@@ -22,17 +19,11 @@ import com.example.lalytto.sadora.Services.OnHttpRequestComplete;
 import com.example.lalytto.sadora.Services.Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Locale;
-
-import cz.msebera.android.httpclient.Header;
 
 public class CategoryActivity extends AppCompatActivity {
 
@@ -40,7 +31,7 @@ public class CategoryActivity extends AppCompatActivity {
     String uriService;
     private AppCtrl ctrl;
     RecyclerView recyclerView;
-    RVAdapter adapter;
+    RVAdapterCategory adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,19 +40,24 @@ public class CategoryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.refresh_categoria);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Refrescando registros", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                getCategory();
             }
         });
 
         ctrl = new AppCtrl(this);
+        getCategory();
+
+    }
+
+    private void getCategory(){
         category = getIntent().getExtras().getString("category");
-        ctrl.elementsService.displayToast(category);
-        uriService = HttpService.uriGET+category;
+        uriService = HttpService.uriGET+category+"&customQuery=getFromCategory";
         recyclerView = (RecyclerView) findViewById(R.id.rcv_category);
 
         HttpClient client = new HttpClient(new OnHttpRequestComplete() {
@@ -73,13 +69,13 @@ public class CategoryActivity extends AppCompatActivity {
                     try {
                         JSONObject json = new JSONObject(status.getResult());
                         JSONArray jsonarray = json.getJSONArray("data");
-                        ArrayList<Article> articles = new ArrayList<Article>();
+                        ArrayList<Sitios> sitios = new ArrayList<Sitios>();
                         for(int i = 0; i < jsonarray.length(); i++) {
-                            String article = jsonarray.getString(i);
-                            Article a = gson.fromJson(article,Article.class);
-                            articles.add(a);
+                            String sitio = jsonarray.getString(i);
+                            Sitios a = gson.fromJson(sitio,Sitios.class);
+                            sitios.add(a);
                         }
-                        adapter = new RVAdapter(articles);
+                        adapter = new RVAdapterCategory(sitios);
                         LinearLayoutManager llm = new LinearLayoutManager(CategoryActivity.this);
                         recyclerView.setLayoutManager(llm);
                         recyclerView.setAdapter(adapter);
@@ -93,7 +89,6 @@ public class CategoryActivity extends AppCompatActivity {
             }
         });
         client.excecute(uriService);
-
     }
 
 }

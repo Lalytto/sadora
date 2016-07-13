@@ -319,7 +319,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         params.put("usuario_login", inputUser.getText());
         params.put("usuario_password", inputPass.getText());
         AsyncHttpClient client = new AsyncHttpClient();
-        client.post(HttpService.uriLogin + "post_login", params, new JsonHttpResponseHandler(){
+        client.post(HttpService.uriLogin, params, new JsonHttpResponseHandler(){
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
