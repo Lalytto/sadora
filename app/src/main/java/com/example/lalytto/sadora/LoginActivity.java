@@ -3,6 +3,7 @@ package com.example.lalytto.sadora;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import android.widget.EditText;
 
 import com.example.lalytto.sadora.Controllers.AppCtrl;
 import com.example.lalytto.sadora.Services.HttpService;
+import com.example.lalytto.sadora.Views.RegistreActivity;
 import com.example.lalytto.sadora.Views.SessionActivity;
 import com.google.gson.JsonArray;
 import com.loopj.android.http.AsyncHttpClient;
@@ -55,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final String MySession = "Lalytto";
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -84,11 +87,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         inputUser = (AutoCompleteTextView) findViewById(R.id.usuario);
         inputPass = (EditText) findViewById(R.id.password);
 
+        //setSession();
         Button submitBtn = (Button) findViewById(R.id.submit_login);
         submitBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 submitLogin();
+            }
+        });
+
+        Button btnRegistre = (Button) findViewById(R.id.submit_registre);
+        btnRegistre.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                ctrl.activitiesCtrl.changeActivity(LoginActivity.this, RegistreActivity.class);
             }
         });
 
@@ -351,6 +363,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
         });
+    }
+
+    private void setSession(){
+        SharedPreferences session = getSharedPreferences(MySession, 0);
+        SharedPreferences.Editor editor = session.edit();
+        editor.putBoolean("isLogged", false);
+        editor.commit();
+    }
+
+    private void getSession(){
+        SharedPreferences session = getSharedPreferences(MySession, 0);
+        boolean isLogged = session.getBoolean("isLogged", false);
+        if(isLogged){
+            ctrl.elementsService.displayToast("Is logged");
+        } else {
+            ctrl.elementsService.displayToast("No Is logged");
+        }
     }
 
 }

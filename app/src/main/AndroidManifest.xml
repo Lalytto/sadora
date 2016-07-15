@@ -37,7 +37,7 @@
             android:name=".Views.AboutActivity"
             android:label="@string/title_activity_about"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Views.ExampleActivity"></activity>
+        <activity android:name=".Views.RegistreActivity"></activity>
     </application>
 
 </manifest>

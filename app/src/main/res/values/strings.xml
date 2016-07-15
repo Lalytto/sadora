@@ -7,7 +7,8 @@
     <!-- Strings related to login -->
     <string name="str_usuario">Usuario / e-mail</string>
     <string name="str_password">Contraseña</string>
-    <string name="action_sign_in">Sign</string>
+    <string name="action_sign_in">Iniciar</string>
+    <string name="action_sign_up">Registrar</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -32,10 +33,17 @@
     <string name="menu_services">Servicios</string>
     <string name="menu_tour">Tours</string>
     <string name="menu_trip">Transporte</string>
-    <string name="title_activity_categoria">Categorias[Renombrar]</string>
+    <string name="title_activity_categoria">Categorias</string>
 
     <!-- Strings related to About -->
     <string name="app_about">Description from Lalytto.com</string>
+
+    <!-- Strings related to Registre form -->
+    <string name="input_user">Usuario</string>
+    <string name="input_name">Nombre</string>
+    <string name="input_pass">Contraseña</string>
+    <string name="input_pass_again">Contraseña **</string>
+    <string name="input_email">Correo electrónico</string>
 
     <string name="title_activity_about">Acerca</string>
 
