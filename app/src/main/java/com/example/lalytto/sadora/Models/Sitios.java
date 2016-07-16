@@ -6,10 +6,12 @@ package com.example.lalytto.sadora.Models;
 public class Sitios {
 
     private String categoria_nombre;
+    private String clase_nombre;
     private int sitio_id;
     private String sitio_nombre;
     private String sitio_intro;
     private String sitio_descripcion;
+    private String sitio_direccion;
     private String sitio_telefonos;
     private String sitio_email;
     private String sitio_imagen;
@@ -27,6 +29,14 @@ public class Sitios {
 
     public void setCategoria_nombre(String categoria_nombre) {
         this.categoria_nombre = categoria_nombre;
+    }
+
+    public String getClase_nombre() {
+        return clase_nombre;
+    }
+
+    public void setClase_nombre(String clase_nombre) {
+        this.clase_nombre = clase_nombre;
     }
 
     public int getSitio_id() {
@@ -59,6 +69,14 @@ public class Sitios {
 
     public void setSitio_descripcion(String sitio_descripcion) {
         this.sitio_descripcion = sitio_descripcion;
+    }
+
+    public String getSitio_direccion() {
+        return sitio_direccion;
+    }
+
+    public void setSitio_direccion(String sitio_direccion) {
+        this.sitio_direccion = sitio_direccion;
     }
 
     public String getSitio_telefonos() {

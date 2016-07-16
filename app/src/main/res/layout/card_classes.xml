@@ -16,34 +16,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.loopj.android.image.SmartImageView
-                android:layout_width="128dp"
-                android:layout_height="73dp"
-                android:id="@+id/category_img"
-                android:background="@color/cardview_dark_background"
-                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_img">
+
+                <com.loopj.android.image.SmartImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:id="@+id/category_img"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/category_name"
+                    android:textSize="20sp"
+                    android:layout_alignParentBottom="true"
+                    android:padding="5dp"
+                    android:textColor="#FFFFFF"
+                    android:background="#CC000000"
+                    />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/category_img"
-                android:padding="8dp"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/category_name"
-                    android:layout_alignParentTop="true"
-                    android:textSize="20sp"
-                    />
+                android:layout_below="@id/layout_img"
+                android:padding="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/category_intro"
-                    android:layout_toRightOf="@+id/category_img"
-                    android:layout_below="@+id/category_name"
                     />
 
             </RelativeLayout>

@@ -13,11 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.lalytto.sadora.Adapters.RVAdapterCategory;
 import com.example.lalytto.sadora.Adapters.RVAdapterSession;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
 import com.example.lalytto.sadora.Models.Categorias;
-import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
 import com.example.lalytto.sadora.Services.HttpService;
@@ -36,7 +34,6 @@ public class SessionActivity extends AppCompatActivity
 
     private AppCtrl ctrl;
     RecyclerView recyclerView;
-    RVAdapterSession adapter;
     String uriService;
 
     @Override
@@ -57,37 +54,7 @@ public class SessionActivity extends AppCompatActivity
 
         // Intancia de controller
         this.ctrl = new AppCtrl(this);
-        uriService = HttpService.uriGET+"categorias";
-        recyclerView = (RecyclerView) findViewById(R.id.rcv_categories);
-
-
-        HttpClient client = new HttpClient(new OnHttpRequestComplete() {
-            @Override
-            public void onComplete(Response status) {
-                if(status.isSuccess()){
-                    Gson gson = new GsonBuilder().create();
-                    try {
-                        JSONObject json = new JSONObject(status.getResult());
-                        JSONArray jsonarray = json.getJSONArray("data");
-                        ArrayList<Categorias> categorias = new ArrayList<Categorias>();
-                        for(int i = 0; i < jsonarray.length(); i++) {
-                            String categoria = jsonarray.getString(i);
-                            Categorias a = gson.fromJson(categoria,Categorias.class);
-                            categorias.add(a);
-                        }
-                        adapter = new RVAdapterSession(categorias);
-                        LinearLayoutManager llm = new LinearLayoutManager(SessionActivity.this);
-                        recyclerView.setLayoutManager(llm);
-                        recyclerView.setAdapter(adapter);
-                    }catch (Exception e){
-                        System.out.println("Fallo!");
-                        e.printStackTrace();
-                    }
-                } else {
-                    ctrl.elementsService.displayToast("Ha fallado la conexión con lalytto.com - "+uriService);
-                }
-            }
-        }); client.excecute(uriService);
+        getCategories();
 
     }
 
@@ -116,7 +83,8 @@ public class SessionActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            getCategories();
             return true;
         }
 
@@ -132,8 +100,7 @@ public class SessionActivity extends AppCompatActivity
         if (id == R.id.nav_about) {
             this.ctrl.activitiesCtrl.changeActivity(SessionActivity.this, AboutActivity.class);
         } else {
-            Intent intent;
-            intent = this.ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
+            Intent intent = this.ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
             String category = null;
             if (id == R.id.nav_bank) {
                 category = "1";
@@ -156,7 +123,7 @@ public class SessionActivity extends AppCompatActivity
             } else if (id == R.id.nav_shopping) {
                 category = "3";
             }
-            intent.putExtra("category", category);
+            intent.putExtra("categoria_id", category);
             startActivity(intent);
         }
 
@@ -164,4 +131,45 @@ public class SessionActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void  getCategories(){
+        recyclerView = (RecyclerView) findViewById(R.id.rcv_categories);
+        uriService = HttpService.uriGET+"categorias";
+        HttpClient client = new HttpClient(new OnHttpRequestComplete() {
+            @Override
+            public void onComplete(Response status) {
+                if(status.isSuccess()){
+                    Gson gson = new GsonBuilder().create();
+                    try {
+                        JSONObject json = new JSONObject(status.getResult());
+                        JSONArray jsonarray = json.getJSONArray("data");
+                        ArrayList<Categorias> categorias = new ArrayList<Categorias>();
+                        for(int i = 0; i < jsonarray.length(); i++) {
+                            String categoria = jsonarray.getString(i);
+                            Categorias a = gson.fromJson(categoria,Categorias.class);
+                            categorias.add(a);
+                        }
+
+                        LinearLayoutManager llm = new LinearLayoutManager(SessionActivity.this);
+                        recyclerView.setLayoutManager(llm);
+
+                        recyclerView.setAdapter(new RVAdapterSession(categorias, new RVAdapterSession.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(Categorias item) {
+                                Intent intent = ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
+                                intent.putExtra("categoria_id", String.valueOf(item.getCategoria_id()));
+                                startActivity(intent);
+                            }
+                        }));
+                    }catch (Exception e){
+                        System.out.println("Fallo!");
+                        e.printStackTrace();
+                    }
+                } else {
+                    ctrl.elementsService.displayToast("Ha fallado la conexión con lalytto.com - "+uriService);
+                }
+            }
+        }); client.excecute(uriService);
+    }
+
 }

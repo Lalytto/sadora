@@ -37,7 +37,11 @@
             android:name=".Views.AboutActivity"
             android:label="@string/title_activity_about"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Views.RegistreActivity"></activity>
+        <activity android:name=".Views.RegistreActivity" />
+        <activity
+            android:name=".Views.SiteActivity"
+            android:label="@string/title_activity_site"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

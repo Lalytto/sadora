@@ -1,5 +1,6 @@
 package com.example.lalytto.sadora.Views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.lalytto.sadora.Adapters.RVAdapterCategory;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
@@ -28,11 +28,10 @@ import java.util.ArrayList;
 
 public class CategoryActivity extends AppCompatActivity {
 
-    String category;
+    String categoria_id;
     String uriService;
     private AppCtrl ctrl;
     RecyclerView recyclerView;
-    RVAdapterCategory adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,6 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_categoria);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.refresh_categoria);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,15 +48,13 @@ public class CategoryActivity extends AppCompatActivity {
                 getCategory();
             }
         });
-
         ctrl = new AppCtrl(this);
         getCategory();
-
     }
 
     private void getCategory(){
-        category = getIntent().getExtras().getString("category");
-        uriService = HttpService.uriGET+category+"&customQuery=getFromCategory";
+        categoria_id = getIntent().getExtras().getString("categoria_id");
+        uriService = HttpService.uriGET +"sitios&customQuery=getFromCategory&id=" + categoria_id;
         recyclerView = (RecyclerView) findViewById(R.id.rcv_category);
 
         HttpClient client = new HttpClient(new OnHttpRequestComplete() {
@@ -76,10 +72,16 @@ public class CategoryActivity extends AppCompatActivity {
                             Sitios a = gson.fromJson(sitio,Sitios.class);
                             sitios.add(a);
                         }
-                        adapter = new RVAdapterCategory(sitios);
                         LinearLayoutManager llm = new LinearLayoutManager(CategoryActivity.this);
                         recyclerView.setLayoutManager(llm);
-                        recyclerView.setAdapter(adapter);
+                        recyclerView.setAdapter(new RVAdapterCategory(sitios, new RVAdapterCategory.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(Sitios item) {
+                                Intent intent = ctrl.activitiesCtrl.changeActivityParams(CategoryActivity.this, SiteActivity.class);
+                                intent.putExtra("sitio_id", String.valueOf(item.getSitio_id()));
+                                startActivity(intent);
+                            }
+                        }));
                     }catch (Exception e){
                         System.out.println("Fallo!");
                         e.printStackTrace();

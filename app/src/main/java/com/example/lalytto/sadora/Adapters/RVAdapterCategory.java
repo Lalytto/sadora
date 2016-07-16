@@ -1,6 +1,5 @@
 package com.example.lalytto.sadora.Adapters;
 
-import android.graphics.Rect;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,10 +18,43 @@ import java.util.List;
  */
 public class RVAdapterCategory extends RecyclerView.Adapter<RVAdapterCategory.CategoryViewHolder> {
 
-    List<Sitios> sitios;
+    public interface OnItemClickListener {
+        void onItemClick(Sitios item);
+    }
 
-    public RVAdapterCategory(List<Sitios> sitios) {
+    private final List<Sitios> sitios;
+    private final OnItemClickListener listener;
+
+    public RVAdapterCategory(List<Sitios> sitios, OnItemClickListener listener) {
         this.sitios = sitios;
+        this.listener = listener;
+    }
+
+    @Override
+    public CategoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_classes, viewGroup, false);
+        return new CategoryViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(CategoryViewHolder categoryViewHolder, int i) {
+        // Instancia de click
+        categoryViewHolder.bind(sitios.get(i), listener);
+        // Set de atributos
+        categoryViewHolder.intro.setText(sitios.get(i).getSitio_intro());
+        categoryViewHolder.name.setText(sitios.get(i).getSitio_nombre());
+        // Intancia de SmartImagen
+        categoryViewHolder.img.setImageUrl(sitios.get(i).getSitio_imagen());
+    }
+
+    @Override
+    public int getItemCount() {
+        return sitios.size();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
@@ -38,33 +70,15 @@ public class RVAdapterCategory extends RecyclerView.Adapter<RVAdapterCategory.Ca
             intro = (TextView)itemView.findViewById(R.id.category_intro);
             img = (SmartImageView)itemView.findViewById(R.id.category_img);
         }
-    }
 
-    @Override
-    public int getItemCount() {
-        return sitios.size();
-    }
+        public void bind(final Sitios sitios, final OnItemClickListener listener){
+           itemView.setOnClickListener(new View.OnClickListener() {
+               @Override public void onClick(View v) {
+                   listener.onItemClick(sitios);
+               }
+           });
+        }
 
-    @Override
-    public CategoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_category, viewGroup, false);
-        CategoryViewHolder categoryViewHolder = new CategoryViewHolder(view);
-        return categoryViewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(CategoryViewHolder categoryViewHolder, int i) {
-        categoryViewHolder.intro.setText(sitios.get(i).getSitio_intro());
-        categoryViewHolder.name.setText(sitios.get(i).getSitio_nombre());
-
-        Rect rect = new Rect(categoryViewHolder.img.getLeft(), categoryViewHolder.img.getTop(),
-                categoryViewHolder.img.getRight(), categoryViewHolder.img.getBottom());
-        categoryViewHolder.img.setImageUrl(sitios.get(i).getSitio_imagen());
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
     }
 
 }

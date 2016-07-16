@@ -13,6 +13,7 @@ import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.loopj.android.image.SmartImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,10 +21,43 @@ import java.util.List;
  */
 public class RVAdapterSession extends RecyclerView.Adapter<RVAdapterSession.CategoryViewHolder> {
 
-    List<Categorias> categories;
+    public interface OnItemClickListener {
+        void onItemClick(Categorias item);
+    }
 
-    public RVAdapterSession(List<Categorias> categories) {
+    private final List<Categorias> categories;
+    private final OnItemClickListener listener;
+
+    public RVAdapterSession(List<Categorias> categories, OnItemClickListener listener) {
         this.categories = categories;
+        this.listener = listener;
+    }
+
+    @Override
+    public CategoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_categories, viewGroup, false);
+        return new CategoryViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(CategoryViewHolder categoryViewHolder, int i) {
+        // Instancia de click
+        categoryViewHolder.bind(categories.get(i), listener);
+        // Cargar los valores de card
+        categoryViewHolder.intro.setText(categories.get(i).getCategoria_descripcion());
+        categoryViewHolder.name.setText(categories.get(i).getCategoria_nombre());
+        // Graficar la imagen
+        categoryViewHolder.img.setImageUrl(categories.get(i).getCategoria_imagen());
+    }
+
+    @Override
+    public int getItemCount() {
+        return categories.size();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
@@ -39,33 +73,14 @@ public class RVAdapterSession extends RecyclerView.Adapter<RVAdapterSession.Cate
             intro = (TextView)itemView.findViewById(R.id.category_intro);
             img = (SmartImageView)itemView.findViewById(R.id.category_img);
         }
-    }
 
-    @Override
-    public int getItemCount() {
-        return categories.size();
-    }
-
-    @Override
-    public CategoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_category, viewGroup, false);
-        CategoryViewHolder categoryViewHolder = new CategoryViewHolder(view);
-        return categoryViewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(CategoryViewHolder categoryViewHolder, int i) {
-        categoryViewHolder.intro.setText(categories.get(i).getCategoria_descripcion());
-        categoryViewHolder.name.setText(categories.get(i).getCategoria_nombre());
-
-        Rect rect = new Rect(categoryViewHolder.img.getLeft(), categoryViewHolder.img.getTop(),
-                categoryViewHolder.img.getRight(), categoryViewHolder.img.getBottom());
-        categoryViewHolder.img.setImageUrl(categories.get(i).getCategoria_imagen());
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
+        public void bind(final Categorias categorias, final OnItemClickListener listener){
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(categorias);
+                }
+            });
+        }
     }
 
 }

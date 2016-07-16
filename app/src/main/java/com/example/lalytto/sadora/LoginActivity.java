@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-    //private static final String MySession = "Lalytto";
+    private static final String MySession = "Lalytto";
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -365,7 +365,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
     }
 
-    /*private void setSession(){
+    private void setSession(){
         SharedPreferences session = getSharedPreferences(MySession, 0);
         SharedPreferences.Editor editor = session.edit();
         editor.putBoolean("isLogged", false);
@@ -380,7 +380,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             ctrl.elementsService.displayToast("No Is logged");
         }
-    }*/
+    }
 
 }
 
