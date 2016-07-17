@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cv"
-        android:layout_marginBottom="8dp">
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="5dp" >
 
         <RelativeLayout
             android:layout_width="match_parent"

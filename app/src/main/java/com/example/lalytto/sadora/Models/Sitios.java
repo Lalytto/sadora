@@ -17,6 +17,7 @@ public class Sitios {
     private String sitio_imagen;
     private String sitio_longitud;
     private String sitio_latitud;
+    String sitio_visitas;
     private String clase_id;
 
     public Sitios() {
@@ -117,6 +118,14 @@ public class Sitios {
 
     public void setSitio_latitud(String sitio_latitud) {
         this.sitio_latitud = sitio_latitud;
+    }
+
+    public String getSitio_visitas() {
+        return sitio_visitas;
+    }
+
+    public void setSitio_visitas(String sitio_visitas) {
+        this.sitio_visitas = sitio_visitas;
     }
 
     public String getClase_id() {

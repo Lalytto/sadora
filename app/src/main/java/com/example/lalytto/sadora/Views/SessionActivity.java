@@ -86,6 +86,9 @@ public class SessionActivity extends AppCompatActivity
         if (id == R.id.action_refresh) {
             getCategories();
             return true;
+        } else if(id == R.id.action_logout){
+            getCategories();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

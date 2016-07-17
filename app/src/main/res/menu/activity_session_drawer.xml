@@ -47,6 +47,10 @@
     <item android:title="Acerca">
         <menu>
             <item
+                android:id="@+id/nav_scan_qr"
+                android:icon="@drawable/ic_qr"
+                android:title="Lector QR" />
+            <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share" />

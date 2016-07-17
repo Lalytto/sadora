@@ -73,11 +73,11 @@ public class SiteActivity extends AppCompatActivity {
 
                         categoria.setText(sitio.getCategoria_nombre());
                         clase.setText(sitio.getClase_nombre());
-                        visitas.setText(sitio.getSitio_direccion());
+                        visitas.setText(sitio.getSitio_visitas());
                         contacto.setText(sitio.getSitio_direccion());
                         descripcion.setText(sitio.getSitio_direccion());
                         direccion.setText(sitio.getSitio_descripcion());
-                        img.setImageUrl(sitio.getSitio_imagen());
+                        img.setImageUrl("http://sadora.lalytto.com/app/src/img/sitios/"+sitio.getSitio_imagen());
 
                     }catch (Exception e){
                         System.out.println("Fallo!");

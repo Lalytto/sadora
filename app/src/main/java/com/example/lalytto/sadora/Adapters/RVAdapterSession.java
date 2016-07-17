@@ -25,6 +25,7 @@ public class RVAdapterSession extends RecyclerView.Adapter<RVAdapterSession.Cate
         void onItemClick(Categorias item);
     }
 
+    private final String path_img = "http://sadora.lalytto.com/app/src/img/categorias/";
     private final List<Categorias> categories;
     private final OnItemClickListener listener;
 
@@ -47,7 +48,7 @@ public class RVAdapterSession extends RecyclerView.Adapter<RVAdapterSession.Cate
         categoryViewHolder.intro.setText(categories.get(i).getCategoria_descripcion());
         categoryViewHolder.name.setText(categories.get(i).getCategoria_nombre());
         // Graficar la imagen
-        categoryViewHolder.img.setImageUrl(categories.get(i).getCategoria_imagen());
+        categoryViewHolder.img.setImageUrl(path_img+categories.get(i).getCategoria_imagen());
     }
 
     @Override

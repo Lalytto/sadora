@@ -82,7 +82,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         ctrl = new AppCtrl(this);
+        getSession();
         // Set up the login form.
         inputUser = (AutoCompleteTextView) findViewById(R.id.usuario);
         inputPass = (EditText) findViewById(R.id.password);
@@ -336,7 +338,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
-
                 ctrl.elementsService.displayToast("Ok array");
             }
 
@@ -347,6 +348,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     try {
                         if(response.getBoolean("estado")) ctrl.activitiesCtrl.changeActivity(LoginActivity.this, SessionActivity.class);
                         ctrl.elementsService.displayToast(response.getString("mensaje"));
+                        setSession(false);
                     } catch (JSONException e) {
                         ctrl.elementsService.displayToast("Fallo jsonObject!");
                         e.printStackTrace();
@@ -365,10 +367,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
     }
 
-    private void setSession(){
+    private void setSession(Boolean state){
         SharedPreferences session = getSharedPreferences(MySession, 0);
         SharedPreferences.Editor editor = session.edit();
-        editor.putBoolean("isLogged", false);
+        editor.putBoolean("isLogged", state);
         editor.commit();
     }
 
@@ -376,6 +378,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         SharedPreferences session = getSharedPreferences(MySession, 0);
         boolean isLogged = session.getBoolean("isLogged", false);
         if(isLogged){
+            ctrl.activitiesCtrl.changeActivity(LoginActivity.this, SessionActivity.class);
             ctrl.elementsService.displayToast("Is logged");
         } else {
             ctrl.elementsService.displayToast("No Is logged");

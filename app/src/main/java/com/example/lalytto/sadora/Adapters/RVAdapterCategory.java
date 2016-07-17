@@ -22,6 +22,7 @@ public class RVAdapterCategory extends RecyclerView.Adapter<RVAdapterCategory.Ca
         void onItemClick(Sitios item);
     }
 
+    private final String path_img = "http://sadora.lalytto.com/app/src/img/sitios/";
     private final List<Sitios> sitios;
     private final OnItemClickListener listener;
 
@@ -44,7 +45,7 @@ public class RVAdapterCategory extends RecyclerView.Adapter<RVAdapterCategory.Ca
         categoryViewHolder.intro.setText(sitios.get(i).getSitio_intro());
         categoryViewHolder.name.setText(sitios.get(i).getSitio_nombre());
         // Intancia de SmartImagen
-        categoryViewHolder.img.setImageUrl(sitios.get(i).getSitio_imagen());
+        categoryViewHolder.img.setImageUrl(path_img+sitios.get(i).getSitio_imagen());
     }
 
     @Override

@@ -21,6 +21,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_refresh">Actualizar</string>
+    <string name="action_logout">Salir</string>
 
     <!-- Strings related to menu drawer -->
     <string name="menu_banks">Bancos</string>
