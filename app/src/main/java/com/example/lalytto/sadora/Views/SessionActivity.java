@@ -1,6 +1,7 @@
 package com.example.lalytto.sadora.Views;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 
 import com.example.lalytto.sadora.Adapters.RVAdapterSession;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
+import com.example.lalytto.sadora.LoginActivity;
 import com.example.lalytto.sadora.Models.Categorias;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
@@ -35,6 +37,7 @@ public class SessionActivity extends AppCompatActivity
     private AppCtrl ctrl;
     RecyclerView recyclerView;
     String uriService;
+    private static final String MySession = "Lalytto";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class SessionActivity extends AppCompatActivity
 
         // Intancia de controller
         this.ctrl = new AppCtrl(this);
+        getSession(); // Verificar Login
         getCategories();
 
     }
@@ -87,7 +91,7 @@ public class SessionActivity extends AppCompatActivity
             getCategories();
             return true;
         } else if(id == R.id.action_logout){
-            getCategories();
+            logout();
             return true;
         }
 
@@ -173,6 +177,25 @@ public class SessionActivity extends AppCompatActivity
                 }
             }
         }); client.excecute(uriService);
+    }
+
+    private void logout(){
+        SharedPreferences session = getSharedPreferences(MySession, 0);
+        SharedPreferences.Editor editor = session.edit();
+        editor.putBoolean("isLogged", false);
+        editor.commit();
+        ctrl.activitiesCtrl.changeActivity(SessionActivity.this, LoginActivity.class);
+    }
+
+    private void getSession(){
+        SharedPreferences session = getSharedPreferences(MySession, 0);
+        boolean isLogged = session.getBoolean("isLogged", false);
+        if(!isLogged){
+            ctrl.activitiesCtrl.changeActivity(SessionActivity.this, LoginActivity.class);
+            ctrl.elementsService.displayToast("Por favor inicie sesión para continuar...");
+        } else {
+            ctrl.elementsService.displayToast("Bienvenid@ ");
+        }
     }
 
 }

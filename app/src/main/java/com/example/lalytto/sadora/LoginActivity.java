@@ -346,9 +346,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 super.onSuccess(statusCode, headers, response);
                 if(statusCode==200) {
                     try {
-                        if(response.getBoolean("estado")) ctrl.activitiesCtrl.changeActivity(LoginActivity.this, SessionActivity.class);
                         ctrl.elementsService.displayToast(response.getString("mensaje"));
-                        setSession(false);
+                        setSession(response.getBoolean("estado"));
                     } catch (JSONException e) {
                         ctrl.elementsService.displayToast("Fallo jsonObject!");
                         e.printStackTrace();
@@ -372,6 +371,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         SharedPreferences.Editor editor = session.edit();
         editor.putBoolean("isLogged", state);
         editor.commit();
+        if(state) ctrl.activitiesCtrl.changeActivity(LoginActivity.this, SessionActivity.class);
     }
 
     private void getSession(){
@@ -386,4 +386,3 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 }
-
