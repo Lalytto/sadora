@@ -1,9 +1,11 @@
 package com.example.lalytto.sadora.Adapters;
 
+import android.animation.Animator;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -56,6 +58,17 @@ public class RVAdapterCategory extends RecyclerView.Adapter<RVAdapterCategory.Ca
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+
+    }
+
+    public void animateCircularReval(View view){
+        int centerX = 0;
+        int centerY = 0;
+        int startRadius = 0;
+        int endRadius = Math.max(view.getWidth(),view.getHeight());
+        Animator animation = ViewAnimationUtils.createCircularReveal(view, centerX, centerY, startRadius, endRadius);
+        view.setVisibility(View.VISIBLE);
+        animation.start();
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
