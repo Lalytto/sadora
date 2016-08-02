@@ -16,6 +16,7 @@ import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
 import com.example.lalytto.sadora.Services.HttpService;
+import com.example.lalytto.sadora.Services.InfiniteScrollListener;
 import com.example.lalytto.sadora.Services.OnHttpRequestComplete;
 import com.example.lalytto.sadora.Services.Response;
 import com.google.gson.Gson;
@@ -25,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CategoryActivity extends AppCompatActivity {
 
@@ -48,6 +51,16 @@ public class CategoryActivity extends AppCompatActivity {
                 getCategory();
             }
         });
+
+        /*yourListView.setOnScrollListener(new InfiniteScrollListener(5) {
+            @Override
+            public void loadMore(int page, int totalItemsCount) {
+                List<HashMap<String, String>> newData = loader.loadData();
+                dataList.addAll(newData);
+                adapter.notifyDataSetChanged();
+            }
+        });*/
+
         ctrl = new AppCtrl(this);
         getCategory();
     }
@@ -82,6 +95,16 @@ public class CategoryActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         }));
+                        /*
+                        yourListView.setOnScrollListener(new InfiniteScrollListener(5) {
+                            @Override
+                            public void loadMore(int page, int totalItemsCount) {
+                                List<HashMap<String, String>> newData = loader.loadData();
+                                dataList.addAll(newData);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        */
                     }catch (Exception e){
                         System.out.println("Fallo!");
                         e.printStackTrace();
