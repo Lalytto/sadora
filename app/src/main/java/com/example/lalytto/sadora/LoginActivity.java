@@ -32,6 +32,7 @@ import com.example.lalytto.sadora.Services.HttpService;
 import com.example.lalytto.sadora.Views.RegistreActivity;
 import com.example.lalytto.sadora.Views.SessionActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.gson.JsonArray;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -84,15 +85,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-
         ctrl = new AppCtrl(this);
-        getSession();
+        //getSession();
         // Set up the login form.
         inputUser = (AutoCompleteTextView) findViewById(R.id.usuario);
         inputPass = (EditText) findViewById(R.id.password);

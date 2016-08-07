@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.loopj.android.image.SmartImageView;
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import java.util.List;
 
@@ -87,7 +88,8 @@ public class RVAdapterCategory extends RecyclerView.Adapter<RVAdapterCategory.Ca
 
         public void bind(final Sitios sitios, final OnItemClickListener listener){
            itemView.setOnClickListener(new View.OnClickListener() {
-               @Override public void onClick(View v) {
+               @Override
+               public void onClick(View v) {
                    listener.onItemClick(sitios);
                }
            });

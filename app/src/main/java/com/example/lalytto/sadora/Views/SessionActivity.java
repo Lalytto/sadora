@@ -57,7 +57,7 @@ public class SessionActivity extends AppCompatActivity
 
         // Intancia de controller
         this.ctrl = new AppCtrl(this);
-        getSession(); // Verificar Login
+        //getSession(); // Verificar Login
         getCategories();
 
     }
@@ -106,8 +106,12 @@ public class SessionActivity extends AppCompatActivity
 
         if (id == R.id.nav_about) {
             this.ctrl.activitiesCtrl.changeActivity(SessionActivity.this, AboutActivity.class);
+        } else if (id == R.id.nav_nature) {
+            Intent intent = ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, ClassTabActivity.class);
+            intent.putExtra("categoria_id", 6);
+            startActivity(intent);
         } else {
-            Intent intent = this.ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
+            Intent intent = ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
             String category = null;
             if (id == R.id.nav_bank) {
                 category = "1";
@@ -119,8 +123,6 @@ public class SessionActivity extends AppCompatActivity
                 category = "7";
             } else if (id == R.id.nav_hotel) {
                 category = "5";
-            } else if (id == R.id.nav_nature) {
-                category = "6";
             } else if (id == R.id.nav_trip) {
                 category = "10";
             } else if (id == R.id.nav_tour) {
