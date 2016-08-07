@@ -11,25 +11,19 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:scaleType="centerCrop"
+        app:layout_collapseMode="parallax"
         android:id="@+id/cv_site"
-        android:layout_margin="8dp">
+        android:layout_margin="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.loopj.android.image.SmartImageView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:id="@+id/sitio_imagen"
-                />
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sitio_imagen"
                 android:padding="15dp">
 
                 <TextView
@@ -37,6 +31,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/categoria_nombre"
                     android:text="Categoria: "
+                    android:layout_marginLeft="35dp"
                     />
 
                 <TextView
@@ -45,6 +40,7 @@
                     android:id="@+id/clase_nombre"
                     android:layout_below="@+id/categoria_nombre"
                     android:text="Clase: "
+                    android:layout_marginLeft="35dp"
                     />
 
                 <TextView
@@ -53,30 +49,69 @@
                     android:id="@+id/sitio_visitas"
                     android:layout_below="@+id/clase_nombre"
                     android:text="Visto: "
+                    android:layout_marginLeft="30dp"
                     />
 
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/sitio_descripcion"
+
+                    android:id="@+id/lb_descripcion"
+                    android:drawableLeft="@drawable/ic_textsms"
+                    android:layout_below="@+id/sitio_visitas"
+                    android:drawablePadding="8dp"
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/sitio_descripcion"
-                    android:layout_below="@+id/sitio_visitas"
+                    android:layout_below="@+id/lb_descripcion"
                     android:text="Descripción: "
+                    android:layout_marginLeft="30dp"
                     />
 
+
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/sitio_direccion"
+
+                    android:id="@+id/lb_direccion"
+                    android:drawableLeft="@drawable/ic_pin_drop"
+                    android:layout_below="@+id/sitio_descripcion"
+                    android:drawablePadding="8dp"
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/sitio_direccion"
-                    android:layout_below="@+id/sitio_descripcion"
+                    android:layout_below="@+id/lb_direccion"
                     android:text="Dirección: "
+                    android:layout_marginLeft="30dp"
                     />
 
+
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/sitio_contacto"
+
+                    android:id="@+id/lb_contacto"
+                    android:drawableLeft="@drawable/ic_local_phone"
+                    android:layout_below="@+id/sitio_direccion"
+                    android:drawablePadding="8dp"
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/sitio_contacto"
-                    android:layout_below="@+id/sitio_direccion"
+                    android:layout_below="@+id/lb_contacto"
                     android:text="Contacto: "
+                    android:layout_marginLeft="30dp"
                     />
 
             </RelativeLayout>

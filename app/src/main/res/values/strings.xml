@@ -54,5 +54,13 @@
     <string name="title_activity_class_category">ClassCategoryActivity</string>
     <string name="title_activity_category_tab_card">CategoryTabCard</string>
     <string name="title_activity_class_tab">ClassTabActivity</string>
+    <string name="title_activity_scan">ScanActivity</string>
+
+    <string name="sitio_categoria">Categoría</string>
+    <string name="sitio_clase">Clase</string>
+    <string name="sitio_descripcion">Descripción</string>
+    <string name="sitio_direccion">Dirección</string>
+    <string name="sitio_contacto">Contacto</string>
+    <string name="sitio_visitas"> %1$d veces</string>
 
 </resources>

@@ -5,22 +5,21 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
 import com.example.lalytto.sadora.Services.HttpService;
 import com.example.lalytto.sadora.Services.OnHttpRequestComplete;
+import com.example.lalytto.sadora.Services.Response;
+import com.loopj.android.image.SmartImageView;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class AboutActivity extends AppCompatActivity {
 
-    ArrayList<Sitios> articleList;
     NestedScrollView stackContent;
     TextView descApp;
 
@@ -28,6 +27,7 @@ public class AboutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -36,18 +36,19 @@ public class AboutActivity extends AppCompatActivity {
 
         HttpClient client = new HttpClient(new OnHttpRequestComplete() {
             @Override
-            public void onComplete(com.example.lalytto.sadora.Services.Response status) {
+            public void onComplete(Response status) {
                 if(status.isSuccess()){
                     try {
                         JSONObject json = new JSONObject(status.getResult());
                         JSONObject data = json.getJSONObject("data");
-                        //JSONArray data = json.getJSONObject("data");
                         descApp.setText(data.getString("setting_descripcion"));
+                        setTitle(data.getString("setting_nombre"));
+                        SmartImageView img = (SmartImageView) findViewById(R.id.app_imagen);
+                        img.setImageUrl("http://sadora.lalytto.com/app/src/img/system/logo.png");
                     }catch (Exception e){
                         System.out.println("Fallo!");
                         e.printStackTrace();
                     }
-                    //Toast.makeText(AboutActivity.this, status.getResult(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

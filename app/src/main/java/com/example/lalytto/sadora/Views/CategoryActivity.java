@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import com.example.lalytto.sadora.Adapters.RecyclerViewOnItemClickListener;
 import com.example.lalytto.sadora.Adapters.SitesAdapter;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
+import com.example.lalytto.sadora.Models.Categorias;
 import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
@@ -21,10 +22,12 @@ import com.example.lalytto.sadora.Services.OnHttpRequestComplete;
 import com.example.lalytto.sadora.Services.Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.loopj.android.image.SmartImageView;
 
 import android.widget.AbsListView.OnScrollListener;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -50,10 +53,13 @@ public class CategoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categoria);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ctrl = new AppCtrl(this);
+        loadTitleBar();
+
         bottomLayout = (RelativeLayout) findViewById(R.id.loadItemsLayout_listView);
         sitios = new ArrayList<Sitios>();
         recyclerView = (RecyclerView) findViewById(R.id.rcv_category);
@@ -74,6 +80,28 @@ public class CategoryActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         implementScrollListener();
+    }
+
+    private void loadTitleBar() {
+        HttpClient client = new HttpClient(new OnHttpRequestComplete() {
+            @Override
+            public void onComplete(Response status) {
+                if(status.isSuccess()){
+                    System.out.println(status.getResult());
+                    try {
+                        JSONObject json = new JSONObject(status.getResult());
+                        JSONArray data = json.getJSONArray("data");
+                        JSONObject categoria = data.getJSONObject(0);
+                        CategoryActivity.this.setTitle(categoria.getString("categoria_nombre"));
+                        SmartImageView img = (SmartImageView) findViewById(R.id.categoria_imagen);
+                        img.setImageUrl("http://sadora.lalytto.com/app/src/img/categorias/"+categoria.getString("categoria_imagen"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        client.excecute(HttpService.uriGET +"categorias&id=" + getIntent().getExtras().getString("categoria_id"));
     }
 
     private void loadSites(int page){
@@ -104,7 +132,6 @@ public class CategoryActivity extends AppCompatActivity {
         });
         client.excecute(uriService);
     }
-
 
     private void implementScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -148,6 +175,5 @@ public class CategoryActivity extends AppCompatActivity {
             }
         }, 2000);
     }
-
 
 }

@@ -31,8 +31,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SessionActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class SessionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppCtrl ctrl;
     RecyclerView recyclerView;
@@ -46,6 +45,10 @@ public class SessionActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Intancia de controller
+        this.ctrl = new AppCtrl(this);
+        getSession(); // Verificar Login
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -55,9 +58,6 @@ public class SessionActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Intancia de controller
-        this.ctrl = new AppCtrl(this);
-        //getSession(); // Verificar Login
         getCategories();
 
     }
@@ -110,6 +110,8 @@ public class SessionActivity extends AppCompatActivity
             Intent intent = ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, ClassTabActivity.class);
             intent.putExtra("categoria_id", 6);
             startActivity(intent);
+        } else if(id == R.id.nav_scan_qr){
+            this.ctrl.activitiesCtrl.changeActivity(SessionActivity.this, ScanActivity.class);
         } else {
             Intent intent = ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, CategoryActivity.class);
             String category = null;
@@ -194,6 +196,7 @@ public class SessionActivity extends AppCompatActivity
         boolean isLogged = session.getBoolean("isLogged", false);
         if(!isLogged){
             ctrl.activitiesCtrl.changeActivity(SessionActivity.this, LoginActivity.class);
+            finish();
             ctrl.elementsService.displayToast("Por favor inicie sesión para continuar...");
         } else {
             ctrl.elementsService.displayToast("Bienvenid@ ");

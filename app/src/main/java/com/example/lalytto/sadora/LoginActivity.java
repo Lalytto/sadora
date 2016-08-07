@@ -3,6 +3,7 @@ package com.example.lalytto.sadora;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
@@ -28,11 +29,18 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.lalytto.sadora.Controllers.AppCtrl;
+import com.example.lalytto.sadora.Controllers.SessionCtrl;
+import com.example.lalytto.sadora.Models.User;
 import com.example.lalytto.sadora.Services.HttpService;
 import com.example.lalytto.sadora.Views.RegistreActivity;
 import com.example.lalytto.sadora.Views.SessionActivity;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.JsonArray;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -49,36 +57,36 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.google.android.gms.common.api.GoogleApiClient.*;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, OnConnectionFailedListener {
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
-    private static final int REQUEST_READ_CONTACTS = 0;
     private static final String MySession = "Lalytto";
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView inputUser;
     private EditText inputPass;
-    private View mProgressView;
-    private View mLoginFormView;
     private AppCtrl ctrl;
+
+
+    // Session Manager Class
+    SessionCtrl session;
+
+
+    //Signin button
+    private SignInButton signInButton;
+    //Signing Options
+    private GoogleSignInOptions gso;
+    //google api client
+    private GoogleApiClient mGoogleApiClient;
+    //Signin constant to check the activity result
+    private int RC_SIGN_IN = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +94,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
 
         ctrl = new AppCtrl(this);
-        //getSession();
+        getSession();
+
         // Set up the login form.
         inputUser = (AutoCompleteTextView) findViewById(R.id.usuario);
         inputPass = (EditText) findViewById(R.id.password);
 
-        //setSession();
+        //Initializing google signin option
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        //Initializing google signin option
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        //Initializing signinbutton
+        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_WIDE);
+        signInButton.setScopes(gso.getScopeArray());
+
+        //Initializing google api client
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        //Setting onclick listener to signing button
+        signInButton.setOnClickListener(this);
+
         Button submitBtn = (Button) findViewById(R.id.submit_login);
         submitBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -107,265 +139,129 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 ctrl.activitiesCtrl.changeActivity(LoginActivity.this, RegistreActivity.class);
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
+    //This function will option signing intent
+    private void signIn() {
+        //Creating an intent
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+
+        //Starting intent for result
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //If signin
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            //Calling a new function to handle signin
+            handleSignInResult(result);
         }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(inputUser, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
+    }
+
+
+    //After the signing we are calling this function
+    private void handleSignInResult(GoogleSignInResult result) {
+        //If the login succeed
+        if (result.isSuccess()) {
+            //Getting google account
+            GoogleSignInAccount acct = result.getSignInAccount();
+            ctrl.elementsService.displayToast(acct.getDisplayName());
+
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+            SharedPreferences.Editor editor = pref.edit();
+
+            editor.putBoolean("isLogged", true); // Storing boolean - true/false
+            editor.putString("name", acct.getDisplayName()); // Storing string
+            editor.putString("email", acct.getEmail()); // Storing integer
+            editor.putString("personId", acct.getId()); // Storing floatg
+            editor.putString("personPhoto", String.valueOf(acct.getPhotoUrl()));
+
+            editor.commit(); // commit changes
+
+            String personName = acct.getDisplayName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+
+/*
+            //Initializing image loader
+            imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
+                    .getImageLoader();
+
+            imageLoader.get(acct.getPhotoUrl().toString(),
+                    ImageLoader.getImageListener(profilePhoto,
+                            R.mipmap.ic_launcher,
+                            R.mipmap.ic_launcher));
+
+            //Loading image
+            profilePhoto.setImageUrl(acct.getPhotoUrl().toString(), imageLoader);
+*/
         } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            }
-        }
-    }
-
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
-        // Reset errors.
-        inputUser.setError(null);
-        inputPass.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = inputUser.getText().toString();
-        String password = inputPass.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            inputPass.setError(getString(R.string.error_invalid_password));
-            focusView = inputPass;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            inputUser.setError(getString(R.string.error_field_required));
-            focusView = inputUser;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
-        }
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            ctrl.elementsService.displayToast("Login Failed");
         }
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
+    public void onClick(View v) {
+        if (v == signInButton) {
+            //Calling signin
+            signIn();
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-                //submitLogin();
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                inputPass.setError(getString(R.string.error_incorrect_password));
-                inputPass.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 
     private void submitLogin(){
-        RequestParams params = new RequestParams();
-        params.put("usuario_login", inputUser.getText());
-        params.put("usuario_password", inputPass.getText());
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.post(HttpService.uriLogin, params, new JsonHttpResponseHandler(){
+        // Check if username, password is filled
+        if((inputUser.getText().toString()).trim().length() > 0 && (inputPass.getText().toString()).trim().length() > 0){
+            RequestParams params = new RequestParams();
+            params.put("usuario_login", inputUser.getText());
+            params.put("usuario_password", inputPass.getText());
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-                ctrl.elementsService.displayToast("Ok array");
-            }
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.post(HttpService.uriLogin, params, new JsonHttpResponseHandler(){
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                if(statusCode==200) {
-                    try {
-                        ctrl.elementsService.displayToast(response.getString("mensaje"));
-                        setSession(response.getBoolean("estado"));
-                    } catch (JSONException e) {
-                        ctrl.elementsService.displayToast("Fallo jsonObject!");
-                        e.printStackTrace();
-                    }
-                } else {
-                    ctrl.elementsService.displayToast("Connect to server failed!");
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    super.onSuccess(statusCode, headers, response);
+                    ctrl.elementsService.displayToast("Ok array");
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ctrl.elementsService.displayToast("We got an error");
-            }
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    if(statusCode==200) {
+                        try {
+                            ctrl.elementsService.displayToast(response.getString("mensaje"));
+                            setSession(response.getBoolean("estado"));
+                        } catch (JSONException e) {
+                            ctrl.elementsService.displayToast("Fallo jsonObject!");
+                            e.printStackTrace();
+                        }
+                    } else {
+                        ctrl.elementsService.displayToast("Connect to server failed!");
+                    }
+                }
 
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ctrl.elementsService.displayToast("We got an error");
+                }
+
+            });
+        }else{
+            // user didn't entered username or password
+            // Show alert asking him to enter the details
+            ctrl.elementsService.displayToast("Login failed.., Please enter username and password");
+        }
+
     }
 
     private void setSession(Boolean state){
@@ -373,7 +269,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         SharedPreferences.Editor editor = session.edit();
         editor.putBoolean("isLogged", state);
         editor.commit();
-        if(state) ctrl.activitiesCtrl.changeActivity(LoginActivity.this, SessionActivity.class);
+        if(state){
+            ctrl.activitiesCtrl.changeActivity(LoginActivity.this, SessionActivity.class);
+            finish();
+        }
     }
 
     private void getSession(){
@@ -381,6 +280,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean isLogged = session.getBoolean("isLogged", false);
         if(isLogged){
             ctrl.activitiesCtrl.changeActivity(LoginActivity.this, SessionActivity.class);
+            finish();
             ctrl.elementsService.displayToast("Is logged");
         } else {
             ctrl.elementsService.displayToast("No Is logged");

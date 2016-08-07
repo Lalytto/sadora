@@ -1,6 +1,7 @@
 package com.example.lalytto.sadora.Views;
 
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class SiteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -62,6 +64,7 @@ public class SiteActivity extends AppCompatActivity {
                         JSONArray jsonarray = json.getJSONArray("data");
                         Sitios sitio = new Sitios();
                         sitio = gson.fromJson(jsonarray.getString(0),Sitios.class);
+                        SiteActivity.this.setTitle(sitio.getSitio_nombre());
 
                         TextView categoria = (TextView) findViewById(R.id.categoria_nombre);
                         TextView clase = (TextView) findViewById(R.id.clase_nombre);
