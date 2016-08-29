@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "731694020273",
+    "project_id": "firebase-sadora"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731694020273:android:ea15a12abc48cfba",
+        "android_client_info": {
+          "package_name": "com.example.lalytto.sadora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "731694020273-kdkb01kj2c7b7fmdsgjedduo1kqalmie.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lalytto",
+            "certificate_hash": "D51E6B5863160989CFF4B2F59B2578B8AD812491"
+          }
+        },
+        {
+          "client_id": "731694020273-hio6i6lap17lgqv192kqu4lipdjndt2s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBezwXBhJ_WJxdoH-dTNKgRVESTsAX0pAc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,4 +11,6 @@
 
     <!-- Paleta #2 -->
     <color name="rosa500">#EC407A</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

@@ -63,4 +63,8 @@
     <string name="sitio_contacto">Contacto</string>
     <string name="sitio_visitas"> %1$d veces</string>
 
+    <string name="title_activity_ra">RAActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>
