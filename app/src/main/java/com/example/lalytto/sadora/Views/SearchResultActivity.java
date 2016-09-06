@@ -1,19 +1,23 @@
 package com.example.lalytto.sadora.Views;
 
+import android.app.SearchManager;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 
 import com.example.lalytto.sadora.Adapters.RecyclerViewOnItemClickListener;
 import com.example.lalytto.sadora.Adapters.SitesAdapter;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
-import com.example.lalytto.sadora.Models.Categorias;
 import com.example.lalytto.sadora.Models.Sitios;
 import com.example.lalytto.sadora.R;
 import com.example.lalytto.sadora.Services.HttpClient;
@@ -24,8 +28,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.image.SmartImageView;
 
-import android.widget.AbsListView.OnScrollListener;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +35,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryActivity extends AppCompatActivity {
+public class SearchResultActivity extends AppCompatActivity {
 
     String categoria_id;
     String uriService;
@@ -41,6 +43,7 @@ public class CategoryActivity extends AppCompatActivity {
     LinearLayoutManager llm;
     RecyclerView recyclerView;
     List<Sitios> sitios;
+    String search;
     int pageId = 1;
 
     private boolean userScrolled = true;
@@ -53,25 +56,32 @@ public class CategoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categoria);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ctrl = new AppCtrl(this);
-        loadTitleBar();
+        // Intancia de controller
+        this.ctrl = new AppCtrl(this);
+
+        Intent searchIntent = getIntent();
+        if(Intent.ACTION_SEARCH.equals(searchIntent.getAction())) {
+            String query = searchIntent.getStringExtra(SearchManager.QUERY);
+            search = searchIntent.getStringExtra(SearchManager.QUERY);
+            getSupportActionBar().setTitle(query);
+            this.ctrl.elementsService.displayToast(query);
+        }
 
         bottomLayout = (RelativeLayout) findViewById(R.id.loadItemsLayout_listView);
         sitios = new ArrayList<Sitios>();
         recyclerView = (RecyclerView) findViewById(R.id.rcv_category);
         loadSites(pageId);
 
-        llm = new LinearLayoutManager(CategoryActivity.this);
+        llm = new LinearLayoutManager(SearchResultActivity.this);
         recyclerView.setLayoutManager(llm);
         adapter = new SitesAdapter(sitios, new RecyclerViewOnItemClickListener() {
             @Override
             public void onClick(View v, int position) {
                 if (sitios.get(position) instanceof Sitios) {
-                    Intent intent = ctrl.activitiesCtrl.changeActivityParams(CategoryActivity.this, SiteActivity.class);
+                    Intent intent = ctrl.activitiesCtrl.changeActivityParams(SearchResultActivity.this, SiteActivity.class);
                     intent.putExtra("sitio_id", String.valueOf(sitios.get(position).getSitio_id()));
                     startActivity(intent);
                 }
@@ -82,31 +92,9 @@ public class CategoryActivity extends AppCompatActivity {
         implementScrollListener();
     }
 
-    private void loadTitleBar() {
-        HttpClient client = new HttpClient(new OnHttpRequestComplete() {
-            @Override
-            public void onComplete(Response status) {
-                if(status.isSuccess()){
-                    System.out.println(status.getResult());
-                    try {
-                        JSONObject json = new JSONObject(status.getResult());
-                        JSONArray data = json.getJSONArray("data");
-                        JSONObject categoria = data.getJSONObject(0);
-                        CategoryActivity.this.setTitle(categoria.getString("categoria_nombre"));
-                        SmartImageView img = (SmartImageView) findViewById(R.id.categoria_imagen);
-                        img.setImageUrl("http://sadora.lalytto.com/app/src/img/categorias/"+categoria.getString("categoria_imagen"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        client.excecute(HttpService.uriGET +"categorias&id=" + getIntent().getExtras().getString("categoria_id"));
-    }
-
     private void loadSites(int page){
         categoria_id = getIntent().getExtras().getString("categoria_id");
-        uriService = HttpService.uriGET +"sitios&smartQuery&limit=5&order=sitio_nombre&page="+page+"&filter=&categoryId=" + categoria_id;
+        uriService = HttpService.uriGET +"sitios&smartQuery&limit=5&order=sitio_nombre&page="+page+"&filter="+search;
         HttpClient client = new HttpClient(new OnHttpRequestComplete() {
             @Override
             public void onComplete(Response status) {
@@ -138,7 +126,7 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     userScrolled = true;
                 }
             }

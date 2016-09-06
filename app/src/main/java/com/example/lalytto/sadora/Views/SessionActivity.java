@@ -1,5 +1,6 @@
 package com.example.lalytto.sadora.Views;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.lalytto.sadora.Adapters.RVAdapterSession;
 import com.example.lalytto.sadora.Controllers.AppCtrl;
@@ -46,7 +49,7 @@ public class SessionActivity extends AppCompatActivity implements NavigationView
         setSupportActionBar(toolbar);
 
         // Intancia de controller
-        this.ctrl = new AppCtrl(this);
+        ctrl = new AppCtrl(this);
         getSession(); // Verificar Login
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -59,7 +62,6 @@ public class SessionActivity extends AppCompatActivity implements NavigationView
         navigationView.setNavigationItemSelectedListener(this);
 
         getCategories();
-
     }
 
     @Override
@@ -76,6 +78,12 @@ public class SessionActivity extends AppCompatActivity implements NavigationView
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.session, menu);
+
+        // Buscador
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
         return true;
     }
 

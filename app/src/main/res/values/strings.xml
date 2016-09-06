@@ -20,6 +20,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="action_search">Buscar</string>
     <string name="action_refresh">Actualizar</string>
     <string name="action_logout">Salir</string>
 
@@ -66,5 +67,6 @@
     <string name="title_activity_ra">RAActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="searchable">Buscador</string>
 
 </resources>
