@@ -1,5 +1,7 @@
 package com.example.lalytto.sadora.Views;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +27,8 @@ import org.json.JSONObject;
 
 public class SiteActivity extends AppCompatActivity {
 
+    FloatingActionButton fabMap;
+    String uriMap;
     String sitio_id;
     String uriService;
     private AppCtrl ctrl;
@@ -66,7 +70,6 @@ public class SiteActivity extends AppCompatActivity {
                         sitio = gson.fromJson(jsonarray.getString(0),Sitios.class);
                         SiteActivity.this.setTitle(sitio.getSitio_nombre());
 
-                        TextView categoria = (TextView) findViewById(R.id.categoria_nombre);
                         TextView clase = (TextView) findViewById(R.id.clase_nombre);
                         TextView visitas = (TextView) findViewById(R.id.sitio_visitas);
                         TextView contacto = (TextView) findViewById(R.id.sitio_contacto);
@@ -74,13 +77,26 @@ public class SiteActivity extends AppCompatActivity {
                         TextView direccion  = (TextView) findViewById(R.id.sitio_direccion);
                         SmartImageView img = (SmartImageView) findViewById(R.id.sitio_imagen);
 
-                        categoria.setText(sitio.getCategoria_nombre());
-                        clase.setText(sitio.getClase_nombre());
+                        clase.setText(sitio.getCategoria_nombre()+" | "+sitio.getClase_nombre());
                         visitas.setText(sitio.getSitio_visitas());
                         contacto.setText(sitio.getSitio_direccion());
                         descripcion.setText(sitio.getSitio_direccion());
                         direccion.setText(sitio.getSitio_descripcion());
                         img.setImageUrl("http://sadora.lalytto.com/app/src/img/sitios/"+sitio.getSitio_imagen());
+                        uriMap = "geo:"+sitio.getSitio_longitud()+","+sitio.getSitio_latitud()+"?z=10&q=" + Uri.encode(sitio.getSitio_nombre());
+
+                        fabMap = (FloatingActionButton) findViewById(R.id.fabMap);
+                        fabMap.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Uri gmmIntentUri = Uri.parse(uriMap);
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivity(mapIntent);
+                                }
+                            }
+                        });
 
                     }catch (Exception e){
                         System.out.println("Fallo!");

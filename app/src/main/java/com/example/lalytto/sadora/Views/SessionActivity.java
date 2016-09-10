@@ -78,12 +78,10 @@ public class SessionActivity extends AppCompatActivity implements NavigationView
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.session, menu);
-
         // Buscador
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
         return true;
     }
 
@@ -98,9 +96,6 @@ public class SessionActivity extends AppCompatActivity implements NavigationView
         if (id == R.id.action_refresh) {
             getCategories();
             return true;
-        } else if(id == R.id.action_logout){
-            logout();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -114,6 +109,8 @@ public class SessionActivity extends AppCompatActivity implements NavigationView
 
         if (id == R.id.nav_about) {
             this.ctrl.activitiesCtrl.changeActivity(SessionActivity.this, AboutActivity.class);
+        } else if (id == R.id.nav_logout) {
+            logout();
         } else if (id == R.id.nav_nature) {
             Intent intent = ctrl.activitiesCtrl.changeActivityParams(SessionActivity.this, ClassTabActivity.class);
             intent.putExtra("categoria_id", 6);

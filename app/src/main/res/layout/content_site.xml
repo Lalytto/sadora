@@ -29,27 +29,27 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/categoria_nombre"
-                    android:text="Categoria: "
-                    android:layout_marginLeft="35dp"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/clase_nombre"
-                    android:layout_below="@+id/categoria_nombre"
                     android:text="Clase: "
                     android:layout_marginLeft="35dp"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="5dp"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Visto: "
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+
                     android:id="@+id/sitio_visitas"
                     android:layout_below="@+id/clase_nombre"
-                    android:text="Visto: "
-                    android:layout_marginLeft="30dp"
+                    android:drawableLeft="@drawable/ic_visibility"
+                    android:drawablePadding="8dp"
+                    android:layout_marginBottom="5dp"
                     />
 
                 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -57,6 +57,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/sitio_descripcion"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
 
                     android:id="@+id/lb_descripcion"
                     android:drawableLeft="@drawable/ic_textsms"
@@ -70,6 +72,7 @@
                     android:layout_below="@+id/lb_descripcion"
                     android:text="Descripción: "
                     android:layout_marginLeft="30dp"
+                    android:layout_marginBottom="5dp"
                     />
 
 
@@ -78,6 +81,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/sitio_direccion"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
 
                     android:id="@+id/lb_direccion"
                     android:drawableLeft="@drawable/ic_pin_drop"
@@ -91,6 +96,7 @@
                     android:layout_below="@+id/lb_direccion"
                     android:text="Dirección: "
                     android:layout_marginLeft="30dp"
+                    android:layout_marginBottom="5dp"
                     />
 
 
@@ -99,6 +105,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/sitio_contacto"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
 
                     android:id="@+id/lb_contacto"
                     android:drawableLeft="@drawable/ic_local_phone"
@@ -112,6 +120,7 @@
                     android:layout_below="@+id/lb_contacto"
                     android:text="Contacto: "
                     android:layout_marginLeft="30dp"
+                    android:layout_marginBottom="5dp"
                     />
 
             </RelativeLayout>

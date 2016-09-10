@@ -51,7 +51,8 @@
                 android:name="android.app.default_searchable"
                 android:value=".Views.SearchResultActivity" />
         </activity>
-        <activity android:name=".Views.SearchResultActivity">
+        <activity android:name=".Views.SearchResultActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
